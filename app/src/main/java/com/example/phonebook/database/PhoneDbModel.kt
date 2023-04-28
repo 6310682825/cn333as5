@@ -21,7 +21,7 @@ data class PhoneDbModel(
             PhoneDbModel(4, "Kursh Delivery", "991557433", "Other", 5, false),
             PhoneDbModel(5, "Adam", "886350599", "Mobile", 1, false),
             PhoneDbModel(6, "Jane", "882415513", "Mobile", 1, false),
-            PhoneDbModel(7, "Auntie's home" "991630331", "Home", 3, false)
+            PhoneDbModel(7, "Auntie's home", "991630331", "Home", 3, false)
         )
     }
 }
