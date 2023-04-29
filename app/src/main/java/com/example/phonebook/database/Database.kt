@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [PhoneDbModel::class, ColorDbModel::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun noteDao(): PhoneDao
+    abstract fun PhoneDao(): PhoneDao
     abstract fun colorDao(): ColorDao
 
     companion object {

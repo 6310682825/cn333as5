@@ -16,7 +16,7 @@ class DbMapper {
         mapPhone(it, colorDbModel)
     }
 
-    // convert NoteDbModel to NoteModel
+    // convert PhoneDbModel to PhoneModel
     fun mapPhone(phoneDbModel: PhoneDbModel, colorDbModel: ColorDbModel): PhoneModel {
         val color = mapColor(colorDbModel)
         //val isCheckedOff = with(phoneDbModel) { if (canBeCheckedOff) isCheckedOff else null }
@@ -31,7 +31,7 @@ class DbMapper {
     fun mapColor(colorDbModel: ColorDbModel): ColorModel =
         with(colorDbModel) { ColorModel(id, colorCode, color) }
 
-    // convert NoteModel back to NoteDbModel
+    // convert PhoneModel back to PhoneDbModel
     fun mapDbNote(phone: PhoneModel): PhoneDbModel =
         with(phone) {
             //val canBeCheckedOff = isCheckedOff != null

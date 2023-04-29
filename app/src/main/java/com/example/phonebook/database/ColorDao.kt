@@ -11,10 +11,10 @@ import androidx.room.Query
 interface ColorDao {
 
     @Query("SELECT * FROM ColorDbModel")
-    fun getAll(): List<ColorDbModel>
+    fun getAll(): LiveData<List<ColorDbModel>>
 
     @Query("SELECT * FROM ColorDbModel")
-    fun getAllSync(): LiveData<List<ColorDbModel>>
+    fun getAllSync(): List<ColorDbModel>
 
     @Insert
     fun insertAll(vararg colorDbModel: ColorDbModel)

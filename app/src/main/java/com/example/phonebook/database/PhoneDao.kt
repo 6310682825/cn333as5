@@ -26,6 +26,9 @@ interface PhoneDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(phoneDbModel: PhoneDbModel)
 
+    @Insert
+    fun insertAll(vararg phoneDbModel: PhoneDbModel)
+
     @Query("DELETE FROM PhoneDbModel WHERE id LIKE :id")
     fun delete(id: Long)
 }
