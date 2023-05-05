@@ -5,11 +5,12 @@ import com.example.phonebook.database.ColorDbModel
 
 data class ColorModel(
     val id: Long,
+    val color_code: String,
     val color: String,
-    val color_code: String
+    val type: String
 ) {
 
     companion object {
-        val DEFAULT = with(ColorDbModel.DEFAULT_COLOR) {ColorModel(id, color, colorCode)}
+        val DEFAULT = with(ColorDbModel.DEFAULT_COLOR) {ColorModel(id, colorCode, color, type)}
     }
 }
