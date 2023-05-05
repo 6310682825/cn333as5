@@ -12,7 +12,10 @@ interface PhoneDao {
     fun getAllSync(): List<PhoneDbModel>
 
     @Query("SELECT * FROM PhoneDbModel WHERE id IN (:phoneIds)")
-    fun getPhoneByIdSync(phoneIds: List<Long>): List<PhoneDbModel>
+    fun getPhoneByIdsSync(phoneIds: List<Long>): List<PhoneDbModel>
+
+    @Query("SELECT * FROM PhoneDbModel WHERE id Like :id")
+    fun findByIdSync(id: Long): PhoneDbModel
 
     @Query("SELECT * FROM PhoneDbModel WHERE name IN (:name)")
     fun getPhoneByNameSync(name: List<String>): List<PhoneDbModel>
@@ -28,6 +31,9 @@ interface PhoneDao {
 
     @Insert
     fun insertAll(vararg phoneDbModel: PhoneDbModel)
+
+    @Query("DELETE FROM PhoneDbModel WHERE id IN (:ids)")
+    fun delete(ids: List<Long>)
 
     @Query("DELETE FROM PhoneDbModel WHERE id LIKE :id")
     fun delete(id: Long)

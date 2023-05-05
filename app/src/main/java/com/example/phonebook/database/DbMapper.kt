@@ -6,7 +6,7 @@ import com.example.phonebook.domain.model.PhoneModel
 
 class DbMapper {
 
-    fun mapNotes(
+    fun mapPhones(
         phoneDbModels: List<PhoneDbModel>,
         colorDbModels: Map<Long, ColorDbModel>
     ): List<PhoneModel> = phoneDbModels.map {
@@ -29,13 +29,12 @@ class DbMapper {
 
     // convert ColorDbModel to ColorModel
     fun mapColor(colorDbModel: ColorDbModel): ColorModel =
-        with(colorDbModel) { ColorModel(id, colorCode, color) }
+        with(colorDbModel) { ColorModel(id, colorCode, color, type) }
 
     // convert PhoneModel back to PhoneDbModel
-    fun mapDbNote(phone: PhoneModel): PhoneDbModel =
+    fun mapDbPhone(phone: PhoneModel): PhoneDbModel =
         with(phone) {
-            //val canBeCheckedOff = isCheckedOff != null
-            //val isCheckedOff = isCheckedOff ?: false
+
             if (id == NEW_PHONE_ID)
                 PhoneDbModel(
                     name = name,

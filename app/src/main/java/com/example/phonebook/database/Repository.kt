@@ -14,22 +14,22 @@ class Repository(
     private val dbMapper: DbMapper
 ) {
 
-    // Working Notes
-    private val notesNotInTrashLiveData: MutableLiveData<List<PhoneModel>> by lazy {
+    // Working Phones
+    private val phonesNotInTrashLiveData: MutableLiveData<List<PhoneModel>> by lazy {
         MutableLiveData<List<PhoneModel>>()
     }
 
-    fun getAllNotesNotInTrash(): LiveData<List<PhoneModel>> = notesNotInTrashLiveData
+    fun getAllPhonesNotInTrash(): LiveData<List<PhoneModel>> = phonesNotInTrashLiveData
 
-    // Deleted Notes
-    private val notesInTrashLiveData: MutableLiveData<List<PhoneModel>> by lazy {
+    // Deleted Phones
+    private val phonesInTrashLiveData: MutableLiveData<List<PhoneModel>> by lazy {
         MutableLiveData<List<PhoneModel>>()
     }
 
-    fun getAllNotesInTrash(): LiveData<List<PhoneModel>> = notesInTrashLiveData
+    fun getAllPhonesInTrash(): LiveData<List<PhoneModel>> = phonesInTrashLiveData
 
     init {
-        initDatabase(this::updateNotesLiveData)
+        initDatabase(this::updatePhonesLiveData)
     }
 
     /**
@@ -44,10 +44,10 @@ class Repository(
                 colorDao.insertAll(*colors)
             }
 
-            // Prepopulate notes
+            // Prepopulate phones
             val phone = PhoneDbModel.DEFAULT_PHONE_BOOK.toTypedArray()
-            val dbNotes = PhoneDao.getAllSync()
-            if (dbNotes.isNullOrEmpty()) {
+            val dbPhones = PhoneDao.getAllSync()
+            if (dbPhones.isNullOrEmpty()) {
                 PhoneDao.insertAll(*phone)
             }
 
@@ -55,45 +55,44 @@ class Repository(
         }
     }
 
-    // get list of working notes or deleted notes
-    private fun getAllNotesDependingOnTrashStateSync(isDeleted: Boolean): List<PhoneModel> {
+    fun insertPhone(phone: PhoneModel) {
+        val colorDbModels: Map<String, ColorDbModel> = colorDao.getAllSync().map { it.type to it }.toMap()
+
+        PhoneDao.insert(dbMapper.mapDbPhone(phone))
+        updatePhonesLiveData()
+    }
+
+    private fun getAllPhonesDependingOnTrashStateSync(isDeleted: Boolean): List<PhoneModel> {
         val colorDbModels: Map<Long, ColorDbModel> = colorDao.getAllSync().map { it.id to it }.toMap()
-        val dbNotes: List<PhoneDbModel> =
+        val dbPhones: List<PhoneDbModel> =
             PhoneDao.getAllSync().filter { it.isDeleted == isDeleted }
-        return dbMapper.mapNotes(dbNotes, colorDbModels)
+        return dbMapper.mapPhones(dbPhones, colorDbModels)
     }
 
-    fun insertNote(note: PhoneModel) {
-        PhoneDao.insert(dbMapper.mapDbNote(note))
-        updateNotesLiveData()
+    fun deletePhones(phoneIds: List<Long>) {
+        PhoneDao.delete(phoneIds)
+        updatePhonesLiveData()
+    }
+    fun movePhoneToTrash(phoneId: Long) {
+        val dbPhone = PhoneDao.findByIdSync(phoneId)
+        val newDbPhone = dbPhone.copy(isDeleted = true)
+        PhoneDao.insert(newDbPhone)
+        updatePhonesLiveData()
     }
 
-    fun deletePhone(PhoneId: Long) {
-        PhoneDao.delete(PhoneId)
-        updateNotesLiveData()
-    }
-
-    fun moveNoteToTrash(noteId: Long) {
-        val dbNote = PhoneDao.findByIdSync(noteId)
-        val newDbNote = dbNote.copy(isInTrash = true)
-        PhoneDao.insert(newDbNote)
-        updateNotesLiveData()
-    }
-
-    fun restoreNotesFromTrash(noteIds: List<Long>) {
-        val dbNotesInTrash = PhoneDao.getNotesByIdsSync(noteIds)
-        dbNotesInTrash.forEach {
-            val newDbNote = it.copy(isDeleted = false)
-            PhoneDao.insert(newDbNote)
+    fun restorePhonesFromTrash(phoneIds: List<Long>) {
+        val dbPhonesInTrash = PhoneDao.getPhoneByIdsSync(phoneIds)
+        dbPhonesInTrash.forEach {
+            val newDbPhone = it.copy(isDeleted = false)
+            PhoneDao.insert(newDbPhone)
         }
-        updateNotesLiveData()
+        updatePhonesLiveData()
     }
-
     fun getAllColors(): LiveData<List<ColorModel>> =
         Transformations.map(colorDao.getAll()) { dbMapper.mapColors(it) }
 
-    private fun updateNotesLiveData() {
-        notesNotInTrashLiveData.postValue(getAllNotesDependingOnTrashStateSync(false))
-        notesInTrashLiveData.postValue(getAllNotesDependingOnTrashStateSync(true))
+    private fun updatePhonesLiveData() {
+        phonesNotInTrashLiveData.postValue(getAllPhonesDependingOnTrashStateSync(false))
+        phonesInTrashLiveData.postValue(getAllPhonesDependingOnTrashStateSync(true))
     }
 }

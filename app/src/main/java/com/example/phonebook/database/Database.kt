@@ -11,7 +11,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun colorDao(): ColorDao
 
     companion object {
-        private const val DATABASE_NAME = "note-maker-database"
+        private const val DATABASE_NAME = "phone-maker-database"
         private var INSTANCE: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
